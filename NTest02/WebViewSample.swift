@@ -31,7 +31,10 @@ class WebViewController: UIViewController, WKNavigationDelegate {
   fileprivate var timer: Timer!
   
   fileprivate var numLabel: UILabel!
+  fileprivate var toolBar: UIToolbar!
+  fileprivate var secondLabel: UILabel!
   
+  fileprivate var navigationBar: UINavigationBar!
   // MAKR: Initialization
   fileprivate func initWebView() {
     webView = WKWebView(frame: .zero)
@@ -82,7 +85,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
   fileprivate func initButtonLoadRequest() {
     buttonLoadRequest = UIButton(type: .system)
     buttonLoadRequest.frame = .zero
-    buttonBar.addSubview(buttonLoadRequest)
+    self.view.addSubview(buttonLoadRequest)
     
     buttonLoadRequest.backgroundColor = .white
     buttonLoadRequest.layer.cornerRadius = 30
@@ -133,20 +136,62 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     self.view.addSubview(activityIndicatorView)
     
     activityIndicatorView.hidesWhenStopped = true
- 
+    
   }
- 
+  
   
   fileprivate func initProgressView() {
     progressView = UIProgressView(progressViewStyle: .bar)
     progressView.frame = .zero
     progressView.layer.cornerRadius = 10
-
+    
     
     self.view.addSubview(progressView)
   }
   
-
+  
+  fileprivate func initToolBar() {
+    toolBar = UIToolbar(frame: .zero)
+    self.view.addSubview(toolBar)
+    
+    let saveButton = UIBarButtonItem( barButtonSystemItem: .save, target: self, action: #selector(save))
+    let stopButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.stop, target: self, action: #selector(stop))
+    let flexiButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+    let aaaButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(stop))
+    let cbutton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(stop))
+    let bbbButton = UIBarButtonItem(title: "aaa", style: .plain, target: self, action: nil)
+    let ebutton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.bookmarks, target: self, action: #selector(stop))
+    let fbutton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.camera, target: self, action: #selector(stop))
+    let gbutton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.compose, target: self, action: #selector(stop))
+    let hbutton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(stop))
+    let ibutton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(stop))
+    toolBar.items = [saveButton,flexiButton,stopButton,flexiButton,aaaButton,flexiButton,bbbButton,flexiButton,cbutton,flexiButton,ebutton,flexiButton,fbutton,flexiButton,gbutton,flexiButton,hbutton,flexiButton,ibutton]
+    
+    
+  }
+  
+  
+  fileprivate func initSecondLabel() {
+    secondLabel = UILabel(frame: .zero)
+    self.view.addSubview(secondLabel)
+    
+    secondLabel.text = "Label"
+  }
+  
+  fileprivate func initNavigationBar() {
+    navigationBar = UINavigationBar(frame: .zero)
+    self.view.addSubview(navigationBar)
+    
+    let saveButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(save))
+    let stopButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(stop))
+    
+    let navigationItem = UINavigationItem()
+    navigationItem.title = "bar"
+    navigationItem.leftBarButtonItem = saveButton
+    navigationItem.rightBarButtonItem = stopButton
+    navigationBar.items = [navigationItem]
+  }
+  
   // MAKR: Life circle
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -163,6 +208,9 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     initActivityIndicatorView()
     initProgressView()
     //initTimer()
+    initSecondLabel()
+    initToolBar()
+    initNavigationBar()
   }
   
   override func viewWillLayoutSubviews() {
@@ -176,13 +224,19 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     // let screen = UIScreen.main.bounds
     
     self.view.snp.makeConstraints { (make) in
-      make.top.left.right.bottom.equalTo(UIScreen.main.bounds.size)
+      make.top.left.right.equalTo(UIScreen.main.bounds.size)
+      make.bottom.equalTo(UIScreen.main.bounds.size)
+    }
+    
+    navigationBar.snp.makeConstraints { (make) in
+      make.top.left.right.equalToSuperview()
+      make.height.equalTo(40)
     }
     
     webView.snp.makeConstraints { (make) in
       make.top.equalToSuperview().offset(400)
       make.left.equalToSuperview()
-      make.height.width.equalTo(UIScreen.main.bounds.size)
+      make.height.width.equalTo(200)
     }
     
     numLabel.snp.makeConstraints { (make) in
@@ -192,11 +246,11 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       make.width.equalTo(200)
     }
     
-    buttonBar.snp.makeConstraints { (make) in
-      make.top.equalToSuperview().offset(15)
-      make.left.right.equalToSuperview()
-      make.width.equalTo(30)
-    }
+    //    buttonBar.snp.makeConstraints { (make) in
+    //      make.top.equalToSuperview().offset(15)
+    //      make.left.right.equalToSuperview()
+    //      make.width.equalTo(30)
+    //    }
     
     //    buttonLoadHTMLString.snp.makeConstraints { (make) in
     //      make.top.left.bottom.equalTo(buttonBar)
@@ -210,7 +264,8 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     //    }
     
     buttonLoadRequest.snp.makeConstraints { (make) in
-      make.top.bottom.equalToSuperview()
+      make.top.equalToSuperview().offset(60)
+      make.right.equalToSuperview()
       make.left.equalTo(200)
       make.width.equalTo(120)
     }
@@ -234,13 +289,13 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       make.width.equalTo(60)
       make.height.equalTo(60)
     }
-       buttonUpload.snp.makeConstraints { (make) in
-        make.top.equalTo(activityIndicatorView.snp.bottom).offset(16)
-        make.left.equalTo(activityIndicatorView).offset(15)
-        make.width.equalTo(60)
-        make.height.equalTo(30)
-        
-        }
+    buttonUpload.snp.makeConstraints { (make) in
+      make.top.equalTo(activityIndicatorView.snp.bottom).offset(16)
+      make.left.equalTo(activityIndicatorView).offset(15)
+      make.width.equalTo(60)
+      make.height.equalTo(30)
+      
+    }
     
     
     
@@ -250,6 +305,19 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       make.height.equalTo(16)
       make.width.equalTo(200)
     }
+    
+    secondLabel.snp.makeConstraints { (make) in
+      make.center.equalToSuperview()
+      make.height.equalTo(secondLabel.intrinsicContentSize)
+      make.width.equalTo(100)
+    }
+    
+    toolBar.snp.makeConstraints { (make) in
+      make.bottom.right.left.equalToSuperview()
+      make.height.equalTo(40)
+    }
+    
+    
   }
   // MARK: Tap event
   @objc func testLoadHTMLString() {
@@ -296,9 +364,9 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       print("Tap yes button")
     }
     
-    alerController.addAction(noAction)
-    alerController.addAction(yesAction)
-    alerController.addAction(skipAction)
+//    alerController.addAction(noAction)
+//    alerController.addAction(yesAction)
+//    alerController.addAction(skipAction)
     self.present(alerController, animated: true, completion: nil)
   }
   
@@ -314,11 +382,11 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     let cSheet = UIAlertAction(title: "C", style: .destructive) { (sheetAction) in
       print("tap c")
     }
-    
-    actionSheetController.addAction(aSheet)
-    actionSheetController.addAction(bSheet)
-    actionSheetController.addAction(cSheet)
-    
+//
+//    actionSheetController.addAction(aSheet)
+//    actionSheetController.addAction(bSheet)
+//    actionSheetController.addAction(cSheet)
+//
     self.present(actionSheetController, animated: true, completion: nil)
   }
   
@@ -350,7 +418,13 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     }
   }
   
+  @objc func save() {
+    secondLabel.text = "click save"
+  }
   
+  @objc func stop() {
+    secondLabel.text = "stopped"
+  }
   
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
     print("start")
