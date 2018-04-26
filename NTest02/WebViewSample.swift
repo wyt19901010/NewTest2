@@ -24,6 +24,14 @@ class WebViewController: UIViewController, WKNavigationDelegate {
   fileprivate var buttonAlerView: UIButton!
   fileprivate var buttonActionSheet: UIButton!
   
+  fileprivate var buttonUpload: UIButton!
+  fileprivate var activityIndicatorView: UIActivityIndicatorView!
+  
+  fileprivate var progressView: UIProgressView!
+  fileprivate var timer: Timer!
+  
+  fileprivate var numLabel: UILabel!
+  
   // MAKR: Initialization
   fileprivate func initWebView() {
     webView = WKWebView(frame: .zero)
@@ -31,6 +39,13 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     
     webView.backgroundColor = .white
     
+  }
+  
+  fileprivate func initNumLabel() {
+    numLabel = UILabel(frame: .zero)
+    self.view.addSubview(numLabel)
+    
+    numLabel.text = "0.00"
   }
   
   fileprivate func initButtonBar() {
@@ -100,18 +115,54 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     buttonActionSheet.addTarget(self, action: #selector(testSheet), for: .touchUpInside)
   }
   
+  fileprivate func initButtonUpload() {
+    buttonUpload = UIButton(type: .system)
+    buttonUpload.frame = .zero
+    self.view.addSubview(buttonUpload)
+    
+    buttonUpload.backgroundColor = .white
+    buttonUpload.layer.cornerRadius = 10
+    buttonUpload.setTitle("upload", for: .normal)
+    buttonUpload.addTarget(self, action: #selector(startTomove), for: .touchUpInside)
+    buttonUpload.addTarget(self, action: #selector(downloadProgress), for: .touchUpInside)
+  }
+  
+  fileprivate func initActivityIndicatorView() {
+    activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    activityIndicatorView.frame = .zero
+    self.view.addSubview(activityIndicatorView)
+    
+    activityIndicatorView.hidesWhenStopped = true
+ 
+  }
+ 
+  
+  fileprivate func initProgressView() {
+    progressView = UIProgressView(progressViewStyle: .bar)
+    progressView.frame = .zero
+    progressView.layer.cornerRadius = 10
+
+    
+    self.view.addSubview(progressView)
+  }
+  
+
   // MAKR: Life circle
   override func viewDidLoad() {
     super.viewDidLoad()
     
     initWebView()
+    initNumLabel()
     initButtonBar()
     //    initButtonLoadHTMLString()
     //    initButtonLoadData()
     initButtonLoadRequest()
     initButtonActionSheet()
     initButtonAlerView()
-    
+    initButtonUpload()
+    initActivityIndicatorView()
+    initProgressView()
+    //initTimer()
   }
   
   override func viewWillLayoutSubviews() {
@@ -132,6 +183,13 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       make.top.equalToSuperview().offset(400)
       make.left.equalToSuperview()
       make.height.width.equalTo(UIScreen.main.bounds.size)
+    }
+    
+    numLabel.snp.makeConstraints { (make) in
+      make.bottom.equalTo(webView.snp.top).offset(-16)
+      make.left.equalToSuperview().offset(8)
+      make.height.equalTo(30)
+      make.width.equalTo(200)
     }
     
     buttonBar.snp.makeConstraints { (make) in
@@ -170,6 +228,28 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       make.height.equalTo(30)
     }
     
+    activityIndicatorView.snp.makeConstraints{ (make) in
+      make.top.equalToSuperview().offset(64)
+      make.left.equalToSuperview().offset(16)
+      make.width.equalTo(60)
+      make.height.equalTo(60)
+    }
+       buttonUpload.snp.makeConstraints { (make) in
+        make.top.equalTo(activityIndicatorView.snp.bottom).offset(16)
+        make.left.equalTo(activityIndicatorView).offset(15)
+        make.width.equalTo(60)
+        make.height.equalTo(30)
+        
+        }
+    
+    
+    
+    progressView.snp.makeConstraints { (make) in
+      make.top.equalTo(buttonUpload.snp.bottom).offset(32)
+      make.left.equalToSuperview().offset(16)
+      make.height.equalTo(16)
+      make.width.equalTo(200)
+    }
   }
   // MARK: Tap event
   @objc func testLoadHTMLString() {
@@ -241,6 +321,36 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     
     self.present(actionSheetController, animated: true, completion: nil)
   }
+  
+  @objc func startTomove() {
+    if (activityIndicatorView.isAnimating){
+      activityIndicatorView.stopAnimating()
+    }else{
+      activityIndicatorView.startAnimating()
+    }
+  }
+  
+  @objc func downloadProgress() {
+    activityIndicatorView.hidesWhenStopped = false
+    timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(download), userInfo: nil, repeats: true)
+  }
+  
+  @objc func download() {
+    progressView.progress = progressView.progress + 0.01
+    numLabel.text = String((Double(Int(progressView.progress * 100))/100))
+    if (progressView.progress == 1.0) {
+      timer.invalidate()
+      let alerController: UIAlertController = UIAlertController(title: "download completed", message: "Great!", preferredStyle: .alert)
+      let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+      alerController.addAction(okAction)
+      
+      
+      activityIndicatorView.stopAnimating()
+      self.present(alerController, animated: true, completion: nil)
+    }
+  }
+  
+  
   
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
     print("start")
