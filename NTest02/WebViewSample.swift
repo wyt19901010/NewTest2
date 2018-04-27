@@ -12,7 +12,8 @@ import WebKit
 import SnapKit
 
 
-class WebViewController: UIViewController, WKNavigationDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+
   
   // MARK: properties
   fileprivate var webView: WKWebView!
@@ -35,6 +36,12 @@ class WebViewController: UIViewController, WKNavigationDelegate {
   fileprivate var secondLabel: UILabel!
   
   fileprivate var navigationBar: UINavigationBar!
+  
+  fileprivate var datePicker: UIPickerView!
+  
+  fileprivate var pickerData: NSDictionary!
+  fileprivate var pickerProvincesData: NSArray!
+  fileprivate var pickerCitiesData: NSArray!
   // MAKR: Initialization
   fileprivate func initWebView() {
     webView = WKWebView(frame: .zero)
@@ -128,6 +135,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     buttonUpload.setTitle("upload", for: .normal)
     buttonUpload.addTarget(self, action: #selector(startTomove), for: .touchUpInside)
     buttonUpload.addTarget(self, action: #selector(downloadProgress), for: .touchUpInside)
+    buttonUpload.addTarget(self, action: #selector(changeTime), for: .touchUpInside)
   }
   
   fileprivate func initActivityIndicatorView() {
@@ -192,6 +200,25 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     navigationBar.items = [navigationItem]
   }
   
+  fileprivate func initDatePicker() {
+    datePicker = UIPickerView(frame: .zero)
+    self.view.addSubview(datePicker)
+    
+    datePicker.delegate = self
+    datePicker.dataSource = self
+
+    let listPath = Bundle.main.path(forResource: "provinces_cities", ofType: "plist")
+    let dict = NSDictionary(contentsOfFile: listPath!)
+    pickerData = dict
+    
+    self.pickerProvincesData = self.pickerData.allKeys as NSArray
+    
+    let seletedProvince = pickerProvincesData[0] as! String
+    pickerCitiesData = pickerData[seletedProvince] as! NSArray
+    
+   // datePicker.backgroundColor = .white
+  }
+  
   // MAKR: Life circle
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -211,6 +238,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     initSecondLabel()
     initToolBar()
     initNavigationBar()
+    initDatePicker()
   }
   
   override func viewWillLayoutSubviews() {
@@ -317,7 +345,12 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       make.height.equalTo(40)
     }
     
-    
+    datePicker.snp.makeConstraints { (make) in
+      make.bottom.equalTo(webView.snp.top)
+      make.right.equalToSuperview()
+      make.width.equalTo(320)
+      make.height.equalTo(167)
+    }
   }
   // MARK: Tap event
   @objc func testLoadHTMLString() {
@@ -364,9 +397,9 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       print("Tap yes button")
     }
     
-//    alerController.addAction(noAction)
-//    alerController.addAction(yesAction)
-//    alerController.addAction(skipAction)
+    alerController.addAction(noAction)
+    alerController.addAction(yesAction)
+    alerController.addAction(skipAction)
     self.present(alerController, animated: true, completion: nil)
   }
   
@@ -382,11 +415,11 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     let cSheet = UIAlertAction(title: "C", style: .destructive) { (sheetAction) in
       print("tap c")
     }
-//
-//    actionSheetController.addAction(aSheet)
-//    actionSheetController.addAction(bSheet)
-//    actionSheetController.addAction(cSheet)
-//
+
+    actionSheetController.addAction(aSheet)
+    actionSheetController.addAction(bSheet)
+    actionSheetController.addAction(cSheet)
+
     self.present(actionSheetController, animated: true, completion: nil)
   }
   
@@ -416,8 +449,20 @@ class WebViewController: UIViewController, WKNavigationDelegate {
       activityIndicatorView.stopAnimating()
       self.present(alerController, animated: true, completion: nil)
     }
+    
+
   }
-  
+  @objc func changeTime() {
+//    let dateFormatter = DateFormatter()
+//    dateFormatter.dateFormat = "yyyy/MM/dd"
+   // secondLabel.text = dateFormatter.string(for: datePicker.date)
+    let row1 = datePicker.selectedRow(inComponent: 0)
+    let row2 = datePicker.selectedRow(inComponent: 1)
+    
+    let sel1 = pickerProvincesData[row1] as! String
+    let sel2 = pickerCitiesData[row2] as! String
+    secondLabel.text = String(format: "%@ , %@ ", sel1,sel2)
+  }
   @objc func save() {
     secondLabel.text = "click save"
   }
@@ -441,5 +486,35 @@ class WebViewController: UIViewController, WKNavigationDelegate {
   
   func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
     print("error")
+  }
+  
+  func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    return 2
+  }
+  
+  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    if (component == 0 ){
+      return self.pickerProvincesData.count
+    } else {
+      return self.pickerCitiesData.count
+    }
+  }
+  
+  func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    if ( component == 0){
+      return self.pickerProvincesData[row] as? String
+    } else {
+      return self.pickerCitiesData[row] as? String
+    }
+  }
+  
+  func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    if ( component == 0) {
+      let seletedProvince = self.pickerProvincesData[row] as! String
+      self.pickerCitiesData = self.pickerData[seletedProvince] as! NSArray
+      //pickerView.reloadComponent(1)
+        datePicker.reloadComponent(1)
+      
+    }
   }
 }

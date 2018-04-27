@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28627D4F20936543003F3D52 /* provinces_cities.plist in Resources */ = {isa = PBXBuildFile; fileRef = 28627D4E20936543003F3D52 /* provinces_cities.plist */; };
 		28A7DF0420917B3E00BB3FA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A7DF0320917B3E00BB3FA4 /* AppDelegate.swift */; };
 		28A7DF0B20917B3F00BB3FA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28A7DF0A20917B3F00BB3FA4 /* Assets.xcassets */; };
 		28A7DF0E20917B3F00BB3FA4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28A7DF0C20917B3F00BB3FA4 /* LaunchScreen.storyboard */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		0CC8F35D7C7E62E6EDB9F55B /* Pods-NTest02UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NTest02UITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-NTest02UITests/Pods-NTest02UITests.release.xcconfig"; sourceTree = "<group>"; };
 		1A1D33DE175383856EE10692 /* Pods_NTest02Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NTest02Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		28627D4E20936543003F3D52 /* provinces_cities.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = provinces_cities.plist; path = "../../../../Downloads/关东升《iOS开发指南》第4版_code/ch5/资源/provinces_cities.plist"; sourceTree = "<group>"; };
 		28A7DF0020917B3E00BB3FA4 /* NTest02.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NTest02.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28A7DF0320917B3E00BB3FA4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		28A7DF0A20917B3F00BB3FA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 		28A7DF0220917B3E00BB3FA4 /* NTest02 */ = {
 			isa = PBXGroup;
 			children = (
+				28627D4E20936543003F3D52 /* provinces_cities.plist */,
 				28A7DF0320917B3E00BB3FA4 /* AppDelegate.swift */,
 				28A7DF3120917C2D00BB3FA4 /* WebViewSample.swift */,
 				28A7DF0A20917B3F00BB3FA4 /* Assets.xcassets */,
@@ -271,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28A7DF0E20917B3F00BB3FA4 /* LaunchScreen.storyboard in Resources */,
+				28627D4F20936543003F3D52 /* provinces_cities.plist in Resources */,
 				28A7DF0B20917B3F00BB3FA4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
