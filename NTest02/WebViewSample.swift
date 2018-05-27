@@ -45,6 +45,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, UIPickerViewDel
   // MAKR: Initialization
   fileprivate func initWebView() {
     webView = WKWebView(frame: .zero)
+
     self.view.addSubview(webView)
     
     webView.backgroundColor = .white
@@ -53,6 +54,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, UIPickerViewDel
   
   fileprivate func initNumLabel() {
     numLabel = UILabel(frame: .zero)
+    
     self.view.addSubview(numLabel)
     
     numLabel.text = "0.00"
@@ -80,6 +82,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, UIPickerViewDel
   fileprivate func initButtonLoadData() {
     buttonLoadData = UIButton(type: .system)
     buttonLoadData.frame = .zero
+    
+    buttonLoadData = UIButton(frame: .zero)
+
     buttonBar.addSubview(buttonLoadData)
     
     buttonLoadData.backgroundColor = .white
@@ -151,6 +156,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, UIPickerViewDel
   fileprivate func initProgressView() {
     progressView = UIProgressView(progressViewStyle: .bar)
     progressView.frame = .zero
+    
     progressView.layer.cornerRadius = 10
     
     
